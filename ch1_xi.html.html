@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ch.1 Stoichiometry — Smart Study Center</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+/* ── BASE ── */
+body{
+  font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+  background:linear-gradient(135deg,#0d2c6b 0%,#1565c0 50%,#1976d2 100%);
+  min-height:100vh;
+  padding:20px 16px;
+}
+
+/* ── WATERMARK ── */
+.watermark-overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  pointer-events:none;z-index:0;overflow:hidden;
+}
+.watermark-overlay span{
+  position:absolute;font-size:14px;font-weight:700;
+  color:rgba(21,101,192,0.065);white-space:nowrap;
+  transform:rotate(-35deg);letter-spacing:1px;text-transform:uppercase;
+}
+
+/* ── CONTAINER ── */
+.container{
+  max-width:880px;margin:0 auto;background:#fff;
+  border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,0.35);
+  overflow:hidden;position:relative;z-index:1;
+}
+
+/* ── BRAND HEADER ── */
+.brand-header{
+  background:linear-gradient(135deg,#071a45 0%,#0d2c6b 55%,#1565c0 100%);
+  color:#fff;padding:14px 22px;
+  display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;
+}
+.brand-left{display:flex;align-items:center;gap:12px}
+.brand-icon{
+  width:46px;height:46px;border-radius:10px;background:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;box-shadow:0 3px 10px rgba(0,0,0,0.3);
+}
+.brand-name{font-size:16px;font-weight:800;letter-spacing:.4px}
+.brand-sub{font-size:12px;color:#90caf9;margin-top:3px;font-weight:600}
+.brand-contact{
+  background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.22);
+  border-radius:20px;padding:7px 18px;font-size:13px;font-weight:700;color:#e3f2fd;
+  white-space:nowrap;
+}
+
+/* ── CHAPTER HEADER ── */
+.chapter-header{
+  background:linear-gradient(135deg,#0d47a1,#1565c0);
+  color:#fff;padding:26px 28px;text-align:center;
+}
+.chapter-header h1{font-size:22px;font-weight:800;margin-bottom:6px;letter-spacing:.3px}
+.chapter-header p{opacity:.88;font-size:13.5px;margin-bottom:12px}
+.badge-row{display:flex;justify-content:center;gap:8px;flex-wrap:wrap}
+.badge{
+  background:rgba(255,255,255,0.18);border-radius:20px;
+  padding:4px 14px;font-size:11.5px;font-weight:700;letter-spacing:.3px;
+}
+
+/* ── STATS BAR ── */
+.stats{
+  display:flex;justify-content:space-around;padding:14px 20px;
+  background:#e3f2fd;border-bottom:2px solid #bbdefb;flex-wrap:wrap;gap:8px;
+}
+.stat-item{text-align:center}
+.stat-label{font-size:10px;color:#1565c0;text-transform:uppercase;letter-spacing:1.2px;font-weight:700}
+.stat-value{font-size:24px;font-weight:800;color:#0d47a1;margin-top:3px}
+
+/* ── QUIZ AREA ── */
+.quiz-area{padding:24px 22px}
+
+/* ── QUESTION CARD ── */
+.question-card{
+  background:#f8f9fa;border-radius:12px;padding:20px;
+  margin-bottom:16px;border-left:5px solid #1565c0;
+  transition:box-shadow .2s;
+}
+.question-card:hover{box-shadow:0 4px 16px rgba(21,101,192,.1)}
+.card-top{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:13px;
+}
+.q-num{
+  background:#1565c0;color:#fff;padding:4px 14px;
+  border-radius:20px;font-weight:700;font-size:12px;
+}
+.q-tag{
+  background:#1565c0;color:#fff;padding:3px 10px;
+  border-radius:14px;font-size:10.5px;font-weight:700;letter-spacing:.3px;
+}
+.q-text{
+  font-size:15px;color:#1a1a1a;margin-bottom:14px;line-height:1.65;font-weight:500;
+}
+
+/* ── OPTIONS ── */
+.options{display:grid;gap:9px}
+.option{
+  padding:11px 16px;background:#fff;border:2px solid #dee2e6;
+  border-radius:9px;cursor:pointer;transition:all .25s;
+  font-size:14px;color:#333;line-height:1.4;
+}
+.option:hover:not(.disabled){border-color:#1565c0;background:#e3f2fd;color:#0d47a1}
+.option.selected{border-color:#1565c0;background:#bbdefb;color:#0d47a1}
+.option.correct{border-color:#2e7d32!important;background:#e8f5e9!important;color:#1b5e20!important;font-weight:700}
+.option.wrong{border-color:#c62828!important;background:#ffebee!important;color:#b71c1c!important}
+.option.disabled{cursor:not-allowed}
+
+/* ── CHECK BUTTON ── */
+.check-btn{
+  margin-top:13px;background:#1565c0;color:#fff;border:none;
+  padding:9px 26px;border-radius:9px;font-size:14px;font-weight:700;
+  cursor:pointer;transition:all .25s;
+}
+.check-btn:hover:not(:disabled){background:#1976d2;transform:translateY(-1px);box-shadow:0 4px 14px rgba(21,101,192,.35)}
+.check-btn:disabled{background:#bdbdbd;cursor:not-allowed;transform:none;box-shadow:none}
+
+/* ── FEEDBACK / EXPLANATION ── */
+.feedback{
+  display:none;margin-top:11px;padding:10px 14px;
+  border-radius:8px;font-size:13px;line-height:1.5;
+}
+.feedback.show{display:block}
+.feedback.correct{background:#e8f5e9;color:#1b5e20;border:2px solid #66bb6a;font-weight:600}
+.feedback.wrong{background:#ffebee;color:#b71c1c;border:2px solid #ef9a9a;font-weight:600}
+.explanation-box{
+  display:none;margin-top:8px;padding:10px 14px;
+  background:#fffde7;border:2px solid #f9a825;
+  border-radius:8px;font-size:13px;color:#5d4037;line-height:1.5;
+}
+.explanation-box.show{display:block}
+.exp-label{font-weight:700;color:#f57f17;margin-right:4px}
+
+/* ── RESULT CARD ── */
+.result-card{
+  background:linear-gradient(135deg,#0d47a1,#1565c0);
+  color:#fff;border-radius:14px;padding:30px 24px;text-align:center;
+  margin:8px 0 4px;
+}
+.result-card h2{font-size:23px;margin-bottom:18px;font-weight:800}
+.result-grid{
+  display:flex;justify-content:space-around;gap:16px;flex-wrap:wrap;margin-bottom:22px;
+}
+.result-stat{text-align:center;background:rgba(255,255,255,.14);border-radius:12px;padding:14px 22px}
+.result-stat-value{font-size:32px;font-weight:800}
+.result-stat-label{font-size:12px;opacity:.85;margin-top:4px;letter-spacing:.5px;text-transform:uppercase}
+.grade-badge{
+  display:inline-block;font-size:42px;font-weight:900;
+  background:rgba(255,255,255,.2);border-radius:50%;
+  width:80px;height:80px;line-height:80px;margin-bottom:16px;
+}
+.result-btn{
+  background:rgba(255,255,255,.18);color:#fff;
+  border:2px solid rgba(255,255,255,.7);padding:10px 24px;border-radius:9px;
+  cursor:pointer;font-size:14px;font-weight:700;margin:6px;transition:all .25s;
+}
+.result-btn:hover{background:#fff;color:#1565c0}
+
+/* ── FOOTER ── */
+.brand-footer{
+  background:linear-gradient(135deg,#071a45,#1565c0);
+  color:#90caf9;text-align:center;padding:16px;font-size:13px;
+}
+.footer-name{font-weight:800;color:#fff;font-size:15px;margin-bottom:4px}
+.footer-contact{font-size:12px;opacity:.75}
+
+/* ── RESPONSIVE ── */
+@media(max-width:540px){
+  .brand-header{flex-direction:column;text-align:center}
+  .brand-left{flex-direction:column;text-align:center}
+  .chapter-header h1{font-size:18px}
+  .stat-value{font-size:20px}
+  .result-stat-value{font-size:26px}
+  .quiz-area{padding:16px 14px}
+}
+</style>
+</head>
+<body>
+
+<!-- WATERMARK -->
+<div class="watermark-overlay" id="wmOverlay"></div>
+
+<div class="container">
+
+  <!-- BRAND HEADER -->
+  <div class="brand-header">
+    <div class="brand-left">
+      <div class="brand-icon">⚗️</div>
+      <div>
+        <div class="brand-name">🎓 Smart Study Center</div>
+        <div class="brand-sub">📚 Sir Ahmer Javed — Chemistry XI</div>
+      </div>
+    </div>
+    <div class="brand-contact">📞 0345-3090057</div>
+  </div>
+
+  <!-- CHAPTER HEADER -->
+  <div class="chapter-header">
+    <h1>⚗️ Chapter 1 — Stoichiometry</h1>
+    <p>Chemistry Class XI &nbsp;|&nbsp; Smart Study Center MCQ Practice</p>
+    <div class="badge-row">
+      <span class="badge">📖 40 MCQs</span>
+      <span class="badge">✅ Instant Feedback</span>
+      <span class="badge">💡 Explanations</span>
+      <span class="badge">🏆 Auto Grading</span>
+    </div>
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats">
+    <div class="stat-item">
+      <div class="stat-label">Total Qs</div>
+      <div class="stat-value" id="statTotal">40</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Answered</div>
+      <div class="stat-value" id="statAnswered">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Correct</div>
+      <div class="stat-value" id="statCorrect">0</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-label">Score</div>
+      <div class="stat-value" id="statScore">0%</div>
+    </div>
+  </div>
+
+  <!-- QUIZ AREA -->
+  <div class="quiz-area" id="quizArea"></div>
+
+  <!-- FOOTER -->
+  <div class="brand-footer">
+    <div class="footer-name">Smart Study Center — Sir Ahmer Javed</div>
+    <div class="footer-contact">Chemistry XI | Ch.1 Stoichiometry &nbsp;|&nbsp; 0345-3090057</div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+/* ═══════════════════════════════════════════════
+   MCQ DATA — Chapter 1: Stoichiometry
+═══════════════════════════════════════════════ */
+const questions = [
+  {q:"Stoichiometry is derived from Greek words meaning:", o:["Mass and energy","Element and measurement","Atom and counting","Reaction and product"], c:1, t:"mcq", exp:"Stoichiometry comes from 'stoicheion' (element) and 'metron' (measurement)."},
+  {q:"The SI unit for measuring the amount of substance is:", o:["Gram","Kilogram","Mole","Atomic mass unit"], c:2, t:"mcq", exp:"The mole is the SI base unit for amount of substance."},
+  {q:"One mole of any substance is defined as containing exactly:", o:["6.02 × 10²¹ particles","6.02 × 10²³ particles","6.02 × 10²⁴ particles","6.02 × 10²² particles"], c:1, t:"mcq", exp:"Avogadro's number (Nₐ) = 6.02 × 10²³ particles per mole."},
+  {q:"Avogadro's number is named in honour of an Italian:", o:["Chemist","Engineer","Physicist","Mathematician"], c:2, t:"mcq", exp:"Amedeo Avogadro was an Italian physicist."},
+  {q:"One mole of magnesium has a mass of 24g and one mole of carbon has a mass of 12g. Which statement is correct?", o:["They contain different numbers of atoms","Magnesium atoms are twice as numerous as carbon atoms","Both contain 6.02 × 10²³ atoms","Carbon contains more particles than magnesium"], c:2, t:"mcq", exp:"One mole of any element always contains 6.02 × 10²³ atoms, regardless of mass."},
+  {q:"The mass in grams of one mole of any pure substance is called:", o:["Atomic mass","Formula mass","Molar mass","Molecular mass"], c:2, t:"mcq", exp:"Molar mass is expressed in g/mol and equals the gram atomic/molecular/formula mass."},
+  {q:"The unit of molar mass is:", o:["g/dm³","g/mol","mol/g","kg/mol"], c:1, t:"mcq", exp:"Molar mass is measured in grams per mole (g/mol)."},
+  {q:"The molar volume of all ideal gases at STP is:", o:["11.2 dm³","22.4 dm³","44.8 dm³","2.24 dm³"], c:1, t:"mcq", exp:"At STP (273 K and 1 atm), one mole of any ideal gas occupies 22.4 dm³."},
+  {q:"Standard Temperature and Pressure (STP) conditions are:", o:["298 K and 1 atm","273 K and 2 atm","273 K and 1 atm","300 K and 1 atm"], c:2, t:"mcq", exp:"STP is defined as 273 K (0°C) and 1 atm pressure."},
+  {q:"How many moles are present in 25.5 g of sodium (molar mass = 23 g/mol)?", o:["0.90 mol","1.11 mol","1.25 mol","0.78 mol"], c:1, t:"mcq", exp:"Moles = 25.5 / 23 = 1.11 mol."},
+  {q:"The mass of 3.25 moles of water (H₂O) is:", o:["48.5 g","55.5 g","58.5 g","62.5 g"], c:2, t:"mcq", exp:"Mass = moles × molar mass = 3.25 × 18 = 58.5 g."},
+  {q:"To convert a given mass of a substance into moles, you should:", o:["Multiply by molar mass","Divide by molar mass","Multiply by Avogadro's number","Divide by Avogadro's number"], c:1, t:"mcq", exp:"No. of moles = Given mass (g) / Molar mass (g/mol)."},
+  {q:"Number of molecules in 610 g of benzoic acid (C₇H₆O₂, molar mass = 122 g/mol) is:", o:["6.02 × 10²³","15.05 × 10²³","30.1 × 10²³","3.01 × 10²³"], c:2, t:"mcq", exp:"Moles = 610/122 = 5; molecules = 5 × 6.02 × 10²³ = 30.1 × 10²³."},
+  {q:"The formula used to convert moles into number of particles is:", o:["No. of particles = moles / Avogadro's number","No. of particles = moles × molar mass","No. of particles = moles × Avogadro's number","No. of particles = moles + Avogadro's number"], c:2, t:"mcq", exp:"Multiplying moles by Avogadro's number gives the number of particles."},
+  {q:"The number of moles in 2.35 × 10²⁵ atoms of aluminum is:", o:["3.9 mol","39 mol","0.39 mol","390 mol"], c:1, t:"mcq", exp:"Moles = 2.35 × 10²⁵ / 6.02 × 10²³ = 39 moles."},
+  {q:"One mole of MgCl₂ contains how many Cl⁻ ions?", o:["6.02 × 10²³","3.01 × 10²³","12.04 × 10²³","18.06 × 10²³"], c:2, t:"mcq", exp:"Each MgCl₂ unit has 2 Cl⁻ ions, so 1 mole contains 2 × 6.02 × 10²³ = 12.04 × 10²³ Cl⁻ ions."},
+  {q:"Volume occupied by 1.5 moles of O₂ at STP is:", o:["11.2 dm³","22.4 dm³","33.6 dm³","44.8 dm³"], c:2, t:"mcq", exp:"Volume = moles × 22.4 = 1.5 × 22.4 = 33.6 dm³."},
+  {q:"Molar volume is calculated by:", o:["Molar mass × density","Molar mass / density","Density / molar mass","Molar mass + density"], c:1, t:"mcq", exp:"Molar volume = Molar mass / density."},
+  {q:"In mass-volume stoichiometry, 49 g of KClO₃ (molar mass = 122.5 g/mol) decomposes: 2KClO₃ → 2KCl + 3O₂. Volume of O₂ liberated at STP is:", o:["22.4 dm³","13.44 dm³","11.2 dm³","6.72 dm³"], c:1, t:"mcq", exp:"Moles KClO₃ = 49/122.5 = 0.4; moles O₂ = 0.6; volume = 0.6 × 22.4 = 13.44 dm³."},
+  {q:"In volume-volume stoichiometry, 50 dm³ of butane (C₄H₁₀) burns completely: 2C₄H₁₀ + 13O₂ → 8CO₂ + 10H₂O. Volume of CO₂ produced is:", o:["100 dm³","150 dm³","200 dm³","250 dm³"], c:2, t:"mcq", exp:"Ratio is 2:8, so 50 dm³ butane gives (8/2) × 50 = 200 dm³ CO₂."},
+  {q:"To reduce a number to the desired significant figures and adjust the last reported digit is called:", o:["Exponential notation","Scientific notation","Rounding off data","Significant figures"], c:2, t:"mcq", exp:"Rounding off reduces a number to desired significant figures and adjusts the last digit."},
+  {q:"If the digit to be dropped is greater than 5, then:", o:["Simply drop it","Add 1 to the preceding digit","Subtract 1 from the preceding digit","Keep the digit unchanged"], c:1, t:"mcq", exp:"When the dropped digit > 5, the retained digit is increased by 1 (e.g., 5.768 → 5.77)."},
+  {q:"5.734 rounded to three significant figures gives:", o:["5.74","5.73","5.70","5.80"], c:1, t:"mcq", exp:"The digit to be dropped (4) is less than 5, so simply drop it → 5.73."},
+  {q:"When 7.865 is rounded to three significant figures, the result is:", o:["7.87","7.85","7.86","7.90"], c:2, t:"mcq", exp:"The digit to be dropped is exactly 5; since 6 (retained digit) is even, just drop the 5 → 7.86."},
+  {q:"In exponential notation N × 10ˣ, the coefficient N must be a number:", o:["Between 0 and 1","Between 1 and 9.999","Greater than 10","Equal to 10"], c:1, t:"mcq", exp:"The coefficient (N) in scientific notation must be between 1 and 9.999."},
+  {q:"Avogadro's number 6.02 × 10²³ in standard notation is:", o:["602,000,000,000,000,000,000,000","60,200,000,000,000,000,000,000","6,020,000,000,000,000,000,000","6,200,000,000,000,000,000,000"], c:0, t:"mcq", exp:"6.02 × 10²³ = 602 followed by 21 zeros = 602,000,000,000,000,000,000,000."},
+  {q:"When multiplying exponential numbers, exponents are:", o:["Multiplied together","Subtracted algebraically","Added algebraically","Divided"], c:2, t:"mcq", exp:"In multiplication of exponential numbers, coefficients are multiplied and exponents are added algebraically."},
+  {q:"The result of dividing 6.60 × 10⁸ by 3.20 × 10³ is:", o:["2.60 × 10⁵","2.06 × 10⁵","2.60 × 10¹¹","2.60 × 10²"], c:0, t:"mcq", exp:"6.60/3.20 = 2.0625 ≈ 2.60; 10⁸⁻³ = 10⁵; answer = 2.60 × 10⁵."},
+  {q:"The reactant that is entirely consumed first during a chemical reaction is called:", o:["Excess reactant","Limiting reactant","Primary reactant","Active reactant"], c:1, t:"mcq", exp:"The limiting reactant (or limiting reagent) is completely consumed first, stopping the reaction."},
+  {q:"Mathematically, the limiting reactant is identified as the one that produces:", o:["Maximum moles of product","Maximum mass of product","Least moles of product","Least volume of product"], c:2, t:"mcq", exp:"The reactant that yields the least number of moles of product is the limiting reactant."},
+  {q:"In the reaction 2H₂ + O₂ → 2H₂O, if 2 moles of H₂ and 2 moles of O₂ are taken, which is the limiting reactant?", o:["O₂","H₂","H₂O","Both are limiting"], c:1, t:"mcq", exp:"2 moles H₂ requires only 1 mole O₂; H₂ is consumed first, making it the limiting reactant."},
+  {q:"In the combustion C₂H₄ + 3O₂ → 2CO₂ + 2H₂O, if 2.8 g C₂H₄ (MW=28) and 6.4 g O₂ (MW=32) react, the limiting reactant is:", o:["C₂H₄","CO₂","O₂","H₂O"], c:2, t:"mcq", exp:"Moles C₂H₄ = 0.1, moles O₂ = 0.2; O₂ produces 0.133 mol CO₂ vs C₂H₄'s 0.2 mol — O₂ is limiting."},
+  {q:"The maximum amount of product obtained from a balanced chemical equation using the limiting reactant is called:", o:["Actual yield","Percentage yield","Theoretical yield","Practical yield"], c:2, t:"mcq", exp:"Theoretical yield is the maximum possible product calculated from the limiting reactant."},
+  {q:"The actual amount of product obtained in an experiment is always:", o:["Equal to theoretical yield","Greater than theoretical yield","Less than theoretical yield","Double the theoretical yield"], c:2, t:"mcq", exp:"Actual yield is always less than theoretical yield due to side reactions or incomplete reactions."},
+  {q:"Percentage yield is calculated by:", o:["(Theoretical yield / Actual yield) × 100","(Actual yield / Theoretical yield) × 100","(Actual yield × Theoretical yield) × 100","(Theoretical yield − Actual yield) × 100"], c:1, t:"mcq", exp:"% Yield = (Actual yield / Theoretical yield) × 100."},
+  {q:"If actual yield is 2 g and theoretical yield is 4 g, the percentage yield is:", o:["25%","75%","100%","50%"], c:3, t:"mcq", exp:"% Yield = (2/4) × 100 = 50%."},
+  {q:"Which of the following best describes the relationship between atomic mass in a.m.u and molar mass?", o:["They are completely different quantities","Numerically equal but differ in units (a.m.u vs. grams)","Molar mass is always double the atomic mass","Atomic mass in grams equals molar mass in a.m.u"], c:1, t:"mcq", exp:"Fe has atomic mass 55.85 a.m.u and molar mass 55.85 g — numerically identical, different units."},
+  {q:"The molar volume formula is:", o:["No. of moles = Volume at STP / 22.4","No. of moles = 22.4 / Volume at STP","Volume at STP = moles / 22.4","No. of moles = Volume × molar mass"], c:0, t:"mcq", exp:"No. of moles = Volume of gas occupied at STP / Molar Volume (22.4 dm³)."},
+  {q:"Complete thermal decomposition of 50 g CaCO₃ (MW=100): CaCO₃ → CaO + CO₂. Mass of CO₂ produced (MW=44) is:", o:["44 g","11 g","22 g","33 g"], c:2, t:"mcq", exp:"Moles CaCO₃ = 50/100 = 0.5; moles CO₂ = 0.5; mass CO₂ = 0.5 × 44 = 22 g."},
+  {q:"The difference between theoretical and actual yield may be due to:", o:["Using excess reactant","Side reactions occurring during the process","Using a balanced equation","Reaction occurring at STP"], c:1, t:"mcq", exp:"Side reactions and incomplete conversion of reactants cause actual yield to be less than theoretical yield."},
+];
+
+/* ═══════════════════════════════════════════════
+   STATE
+═══════════════════════════════════════════════ */
+const state = {
+  answered : 0,
+  correct  : 0,
+  total    : questions.length,
+};
+
+/* ═══════════════════════════════════════════════
+   SHUFFLE
+   Randomises option order; tracks which option
+   is now correct after the shuffle.
+═══════════════════════════════════════════════ */
+function shuffleOptions(q) {
+  /* pair each option text with a flag marking the correct one */
+  const opts = q.o.map((text, i) => ({ text, isCorrect: i === q.c }));
+
+  /* Fisher-Yates shuffle */
+  for (let i = opts.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [opts[i], opts[j]] = [opts[j], opts[i]];
+  }
+
+  return {
+    o : opts.map(x => x.text),
+    c : opts.findIndex(x => x.isCorrect),   /* new correct index */
+  };
+}
+
+/*
+  renderedQuestions[i] holds the shuffled copy of questions[i].
+  checkAnswer() reads from here so the correct-index is always
+  consistent with what the student actually sees on screen.
+*/
+let renderedQuestions = [];
+
+/* ═══════════════════════════════════════════════
+   WATERMARK
+═══════════════════════════════════════════════ */
+(function buildWatermarks(){
+  const overlay = document.getElementById('wmOverlay');
+  const text = 'Sir Ahmer Javed  |  Smart Study Center  |  0345-3090057';
+  for(let r = 0; r < 7; r++){
+    for(let c = 0; c < 3; c++){
+      const span = document.createElement('span');
+      span.textContent = text;
+      span.style.left  = (c * 40 - 5) + '%';
+      span.style.top   = (r * 16 - 4) + '%';
+      overlay.appendChild(span);
+    }
+  }
+})();
+
+/* ═══════════════════════════════════════════════
+   BUILD QUIZ
+═══════════════════════════════════════════════ */
+function buildQuiz(){
+  const area = document.getElementById('quizArea');
+  area.innerHTML = '';
+  renderedQuestions = [];   /* clear previous shuffle on reset */
+
+  questions.forEach((q, i) => {
+    const labels = ['a','b','c','d'];
+
+    /* ── shuffle this question's options ── */
+    const shuffled  = shuffleOptions(q);
+    const displayQ  = { ...q, o: shuffled.o, c: shuffled.c };
+    renderedQuestions[i] = displayQ;   /* save so checkAnswer can read it */
+
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = 'card-' + i;
+
+    /* options HTML — built from the shuffled displayQ */
+    const optionsHTML = displayQ.o.map((opt, j) =>
+      `<div class="option" id="opt-${i}-${j}" onclick="selectOpt(${i},${j})">
+        <strong>${labels[j]})</strong> ${opt}
+      </div>`
+    ).join('');
+
+    card.innerHTML = `
+      <div class="card-top">
+        <span class="q-num">Q ${i + 1}</span>
+        <span class="q-tag">📖 MCQ</span>
+      </div>
+      <div class="q-text">${displayQ.q}</div>
+      <div class="options" id="opts-${i}">${optionsHTML}</div>
+      <button class="check-btn" id="check-${i}" onclick="checkAnswer(${i})">
+        ✔ Check Answer
+      </button>
+      <div class="feedback" id="fb-${i}"></div>
+      <div class="explanation-box" id="exp-${i}">
+        <span class="exp-label">💡 Explanation:</span>${displayQ.exp}
+      </div>`;
+
+    area.appendChild(card);
+  });
+
+  /* result placeholder */
+  const res = document.createElement('div');
+  res.id = 'resultCard';
+  area.appendChild(res);
+
+  updateStats();
+}
+
+/* ═══════════════════════════════════════════════
+   INTERACTION
+═══════════════════════════════════════════════ */
+const userAnswers = {};   /* qi → {selected, checked} */
+
+function selectOpt(qi, oi){
+  if(userAnswers[qi]?.checked) return;
+  /* clear highlight */
+  document.querySelectorAll(`#opts-${qi} .option`).forEach(el => el.classList.remove('selected'));
+  document.getElementById(`opt-${qi}-${oi}`).classList.add('selected');
+  userAnswers[qi] = { selected: oi, checked: false };
+}
+
+function checkAnswer(qi){
+  const entry = userAnswers[qi];
+  if(!entry || entry.checked) return;
+
+  entry.checked = true;
+  /* ── use the shuffled version so correct-index matches what's on screen ── */
+  const q   = renderedQuestions[qi];
+  const ok  = entry.selected === q.c;
+
+  if(ok) state.correct++;
+  state.answered++;
+
+  /* colour options */
+  document.querySelectorAll(`#opts-${qi} .option`).forEach((el, i) => {
+    el.classList.add('disabled');
+    if(i === q.c)                      el.classList.add('correct');
+    else if(i === entry.selected && !ok) el.classList.add('wrong');
+  });
+
+  /* verdict */
+  const fb = document.getElementById(`fb-${qi}`);
+  if(ok){
+    fb.className = 'feedback show correct';
+    fb.textContent = '✓ Correct! Well done!';
+  } else {
+    fb.className = 'feedback show wrong';
+    fb.textContent = `✗ Incorrect! The correct answer is: ${String.fromCharCode(97 + q.c)}) ${q.o[q.c]}`;
+  }
+
+  /* explanation */
+  if(q.exp){
+    document.getElementById(`exp-${qi}`).classList.add('show');
+  }
+
+  /* disable button */
+  document.getElementById(`check-${qi}`).disabled = true;
+
+  updateStats();
+
+  if(state.answered === state.total) showResult();
+}
+
+/* ═══════════════════════════════════════════════
+   STATS
+═══════════════════════════════════════════════ */
+function updateStats(){
+  document.getElementById('statTotal').textContent    = state.total;
+  document.getElementById('statAnswered').textContent = state.answered;
+  document.getElementById('statCorrect').textContent  = state.correct;
+  const pct = state.total > 0 ? Math.round(state.correct / state.total * 100) : 0;
+  document.getElementById('statScore').textContent    = pct + '%';
+}
+
+/* ═══════════════════════════════════════════════
+   RESULT CARD
+═══════════════════════════════════════════════ */
+function showResult(){
+  const pct = Math.round(state.correct / state.total * 100);
+  let grade, msg, emoji;
+
+  if(pct >= 90){ grade='A+'; msg='Outstanding Performance!';  emoji='🌟'; }
+  else if(pct >= 80){ grade='A';  msg='Excellent Work!';           emoji='🎉'; }
+  else if(pct >= 70){ grade='B';  msg='Good Job!';                 emoji='👍'; }
+  else if(pct >= 60){ grade='C';  msg='Keep Practicing!';          emoji='📚'; }
+  else if(pct >= 50){ grade='D';  msg='More Effort Needed!';       emoji='💪'; }
+  else              { grade='F';  msg='Revise the Chapter Again!'; emoji='📖'; }
+
+  document.getElementById('resultCard').innerHTML = `
+    <div class="result-card">
+      <div class="grade-badge">${emoji}</div>
+      <h2>${msg}</h2>
+      <div class="result-grid">
+        <div class="result-stat">
+          <div class="result-stat-value">${state.correct} / ${state.total}</div>
+          <div class="result-stat-label">Correct Answers</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${pct}%</div>
+          <div class="result-stat-label">Score</div>
+        </div>
+        <div class="result-stat">
+          <div class="result-stat-value">${grade}</div>
+          <div class="result-stat-label">Grade</div>
+        </div>
+      </div>
+      <p style="opacity:.85;font-size:13px;margin-bottom:16px">
+        Ch.1 Stoichiometry &nbsp;|&nbsp; Smart Study Center &nbsp;|&nbsp; Sir Ahmer Javed
+      </p>
+      <button class="result-btn" onclick="resetQuiz()">🔄 Try Again</button>
+    </div>`;
+
+  document.getElementById('resultCard').scrollIntoView({ behavior:'smooth' });
+}
+
+/* ═══════════════════════════════════════════════
+   RESET
+═══════════════════════════════════════════════ */
+function resetQuiz(){
+  state.answered = 0;
+  state.correct  = 0;
+  Object.keys(userAnswers).forEach(k => delete userAnswers[k]);
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior:'smooth' });
+}
+
+/* ── INIT ── */
+buildQuiz();
+</script>
+</body>
+</html>
